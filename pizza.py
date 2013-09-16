@@ -38,12 +38,17 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select description, author, price, paid from entries order by id desc')
-    entries = [dict(description=row[0], author=row[1], price=row[2], paid=row[3]) for row in cur.fetchall()]
+    cur = g.db.execute('select id, description, author, price, paid from entries order by id desc')
+    entries = [dict(id=row[0], description=row[1], author=row[2], price=row[3], paid=row[4]) for row in cur.fetchall()]
     for e in entries:
         amount = e['price']
         e['price'] = '{},{:02d} €'.format(int(amount / 100), amount % 100)
     return render_template('show_entries.html', entries=entries)
+
+@app.route('/delete', methods=['POST'])
+def delete_entry():
+    pid = request.form['pid']
+    pass
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -68,7 +73,7 @@ def add_entry():
         g.db.execute('insert into entries (description, author, price, paid) values (?, ?, ?, ?)',
                 [request.form['description'], request.form['author'], price, False])
         g.db.commit()
-        flash('New entry was successfully posted', 'success')
+        flash('A new entry has been posted', 'success')
     return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':
