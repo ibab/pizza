@@ -5,6 +5,7 @@ from flask import Flask, request, session, g, redirect, url_for, \
 from contextlib import closing
 
 import re
+import time
 
 DATABASE = './pizza.sqlite3'
 DEBUG = True
@@ -39,16 +40,22 @@ def teardown_request(exception):
 @app.route('/')
 def show_entries():
     cur = g.db.execute('select id, description, author, price, paid from entries order by id desc')
-    entries = [dict(id=row[0], description=row[1], author=row[2], price=row[3], paid=row[4]) for row in cur.fetchall()]
+    entries = [dict(pid=row[0], description=row[1], author=row[2], price=row[3], paid=row[4]) for row in cur.fetchall()]
     for e in entries:
         amount = e['price']
         e['price'] = '{},{:02d} €'.format(int(amount / 100), amount % 100)
     return render_template('show_entries.html', entries=entries)
 
-@app.route('/delete', methods=['POST'])
-def delete_entry():
-    pid = request.form['pid']
-    pass
+@app.route('/edit/<int:pid>/<action>', methods=['POST'])
+def edit_entry(pid, action):
+    if action == 'toggle_paid':
+        cur = g.db.execute('SELECT paid from entries WHERE id=?', [pid])
+        paid = cur.fetchone()[0]
+        g.db.execute('UPDATE entries SET paid=? WHERE id=?', [not paid, pid])
+    if action == 'delete':
+        g.db.execute('DELETE FROM entries WHERE id=?', [pid])
+    g.db.commit()
+    return redirect(url_for('show_entries'))
 
 @app.route('/add', methods=['POST'])
 def add_entry():

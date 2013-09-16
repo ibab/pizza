@@ -1,49 +1,48 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="panel panel-default">
-      <div class="panel-heading">
-          <h3 class="panel-title">
-          Bestellungen
-          </h3>
-      </div>
-      <ul class="list-group">
-      {% for entry in entries %}
-          <li class="list-group-item">
-            {{ entry.description }}
-            ({{ entry.author }})
-            <!--bezahlt: {% if entry.paid %}✔{% else %}✘{% endif %}--!>
-            <span class="badge">{{ entry.price }}</span>
-        <!--<div class="btn-group">
-          <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
-            Small button <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            ...
-          </ul>
-        </div>--!>
-          </li>
-      {% else %}
-          <li class="list-group-item"><em>No pizzas so far. Why not add one?</em></li>
-      {% endfor %}
-      </ul>
-      <div class="panel-footer">
-          <form class="form-inline" role="form" action="{{ url_for('add_entry') }}" method=post>
-              <div class="form-group col-sm-4">
-                  <input type=text class="form-control" name=description placeholder=Bestellung>
-              </div>
-              <div class="form-group col-sm-3">
-                  <input type=text class="form-control" name=author placeholder=Name>
-              </div>
-              <div class="form-group col-sm-3">
-                  <div class="input-group">
-                      <input type=text class="form-control" name=price placeholder=Preis>
-                      <span class="input-group-addon">€</span>
-                  </div>
-              </div>
-              <div class="form-group">
-                  <button type=submit class="btn btn-primary">Fertig</button>
-              </div>
-          </form>
-      </div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      Bestellungen
+    </h3>
   </div>
+  <ul class="list-group">
+    {% for entry in entries %}
+    <li id="entry{{ entry.pid }}" class="list-group-item">
+    <span class="badge pull-left">{{ entry.price }}</span>
+    {{ entry.description }}
+    ({{ entry.author }})
+    <div class="btn-group pull-right">
+      <button id="paid{{ entry.pid }}" class="btn btn-default btn-xs {% if entry.paid %}active btn-success{% endif %}" onclick="pizza_toggle_paid({{ entry.pid }})">
+        bezahlt
+      </button>
+      <button type="button" class="btn btn-default btn-xs" onclick="pizza_delete({{ entry.pid }})">
+        löschen
+      </button>
+    </div>
+    </li>
+    {% else %}
+    <li class="list-group-item"><em>No pizzas so far. Why not add one?</em></li>
+    {% endfor %}
+  </ul>
+  <div class="panel-footer">
+    <form class="form-inline" role="form" action="{{ url_for('add_entry') }}" method=post>
+      <div class="form-group col-sm-4">
+        <input type=text class="form-control" name=description placeholder=Bestellung>
+      </div>
+      <div class="form-group col-sm-3">
+        <input type=text class="form-control" name=author placeholder=Name>
+      </div>
+      <div class="form-group col-sm-3">
+        <div class="input-group">
+          <input type=text class="form-control" name=price placeholder=Preis>
+          <span class="input-group-addon">€</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <button type=submit class="btn btn-primary">Fertig</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
