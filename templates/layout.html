@@ -33,23 +33,6 @@
         <p class=lead>
           A whole new way to order pizza
         </p>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              {% if category == "error" %}
-                <div class="alert alert-danger alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <strong>Failure!</strong> {{ message }}
-                </div>
-              {% elif category == "success" %}
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <strong>Success!</strong> {{ message }}
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
         {% block body %}{% endblock %}
       </div>
     </div>

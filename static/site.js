@@ -101,6 +101,7 @@ $('#addpizza').on('submit', function(event) {
         }
         div.slideDown();
         $('#main-panel').before(div);
+        div.delay(3000).slideUp();
     });
 });
 
