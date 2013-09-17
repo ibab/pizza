@@ -26,7 +26,7 @@ app.config.from_object(__name__)
 
 app.config.from_envvar('PIZZA_SETTINGS', silent=True)
 
-host, port='localhost', 5000
+host, port='', 80
 
 def cents_to_euros(cents):
     return '{},{:02d} €'.format(int(cents / 100), cents % 100)

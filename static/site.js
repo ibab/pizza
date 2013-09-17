@@ -106,7 +106,7 @@ $('#addpizza').on('submit', function(event) {
 });
 
 (function(){
-    ws = new WebSocket("ws://localhost:5000/websocket");
+    ws = new WebSocket("ws://129.217.160.236/websocket");
     //ws.addEventListener('open', function(e){
     //});
     //ws.onerror = function(){
