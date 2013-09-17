@@ -9,6 +9,8 @@ from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 import gevent.queue
 
+from genorder import print_order
+
 import re
 import time
 import json
@@ -115,6 +117,13 @@ def add_entry():
         for q in queues:
             q.put(('create_entry', data))
     return jsonify(msg='New entry added', type='success')
+
+@app.route('/print', methods=['POST'])
+def route_print_order():
+    csr = g.db.execute('SELECT description, price FROM entries ORDER BY id DESC')
+    pizzas, prices = zip(*csr.fetchall())
+    print_order(pizzas, prices)
+    return 'Printed successfully'
 
 def wsgi_app(environ, start_response):  
     path = environ["PATH_INFO"]  
