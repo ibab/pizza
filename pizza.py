@@ -2,7 +2,7 @@
 
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash, jsonify
+     abort, render_template, flash, jsonify, send_file
 from contextlib import closing
 
 from gevent.pywsgi import WSGIServer
@@ -26,7 +26,7 @@ app.config.from_object(__name__)
 
 app.config.from_envvar('PIZZA_SETTINGS', silent=True)
 
-host, port='localhost', 5000
+host, port='', 80
 
 def cents_to_euros(cents):
     return '{},{:02d} €'.format(int(cents / 100), cents % 100)
@@ -118,12 +118,12 @@ def add_entry():
             q.put(('create_entry', data))
     return jsonify(msg='New entry added', type='success')
 
-@app.route('/print', methods=['POST'])
-def route_print_order():
-    csr = g.db.execute('SELECT description, price FROM entries ORDER BY id DESC')
+@app.route('/order.pdf', methods=['GET'])
+def get_order():
+    csr = g.db.execute('SELECT description, price FROM entries ORDER BY id ASC')
     pizzas, prices = zip(*csr.fetchall())
-    print_order(pizzas, prices)
-    return 'Printed successfully'
+    fname = print_order(pizzas, prices)
+    return send_file(fname)
 
 def wsgi_app(environ, start_response):  
     path = environ["PATH_INFO"]  
