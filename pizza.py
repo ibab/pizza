@@ -3,11 +3,13 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash, jsonify, send_file
+import werkzeug.serving
 from contextlib import closing
 
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 import gevent.queue
+import gevent.monkey; gevent.monkey.patch_all()
 
 from genorder import print_order
 
@@ -16,7 +18,7 @@ import time
 import json
 
 DATABASE = './pizza.sqlite3'
-DEBUG = True
+DEBUG = False
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
@@ -26,7 +28,7 @@ app.config.from_object(__name__)
 
 app.config.from_envvar('PIZZA_SETTINGS', silent=True)
 
-host, port='', 80
+host, port='', 5000
 
 def cents_to_euros(cents):
     return '{},{:02d} €'.format(int(cents / 100), cents % 100)
@@ -141,7 +143,9 @@ def handle_websocket(ws):
         type, data = q.get()
         ws.send(json.dumps({'type': type, 'data': data}))
 
-if __name__ == '__main__':
+@werkzeug.serving.run_with_reloader
+def runServer():
     http_server = WSGIServer((host, port), wsgi_app, handler_class=WebSocketHandler)
     print('Server started at %s:%s'%(host,port))
     http_server.serve_forever()
+
