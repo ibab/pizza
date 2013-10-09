@@ -63,7 +63,7 @@ def show_entries():
 
 @app.route('/get/entries')
 def get_entries():
-    cur = g.db.execute('select id, description, author, price, paid from entries order by id desc')
+    cur = g.db.execute('select id, description, author, price, paid from entries order by id asc')
     entries = [dict(pid=row[0], description=row[1], author=row[2], price=row[3], paid=row[4]) for row in cur.fetchall()]
     for e in entries:
         amount = e['price']
