@@ -19,13 +19,13 @@ render_initial_entries = function() {
         pizza_entries = entries
         orders = $("#orders")
         for (var i=0; i<entries.length; i++) {
-            create_entry(entries[i]);
+            create_entry(entries[i], false);
         }
         display_nopizzas();
     });
 }
 
-create_entry = function(entry) {
+create_entry = function(entry, doSlide) {
     description = entry['description'];
     pid = entry['pid'];
     console.log(pid);
@@ -53,7 +53,9 @@ create_entry = function(entry) {
     });
 
     btngrp = $('<div>', {class: 'btn-group pull-right'}).append(button1, button2);
-    li.slideDown();
+    if (doSlide) {
+        li.slideDown();
+    }
     li.css('display', 'block');
     li.append(btngrp);
     $('#orders').append(li);
@@ -115,7 +117,7 @@ $('#addpizza').on('submit', function(event) {
     ws.addEventListener('message', function(e) {
         evt = JSON.parse(e.data);
         if (evt['type'] == 'create_entry') {
-            create_entry(evt['data']);
+            create_entry(evt['data'], true);
         }
         if (evt['type'] == 'delete_entry') {
             delete_entry(evt['data']);
