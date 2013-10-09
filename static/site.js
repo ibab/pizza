@@ -2,7 +2,7 @@
 display_nopizzas = function() {
     if($.trim($("#orders").html())=='') {
         li = $('<li>', {id: 'noentry', class: 'list-group-item'}).append(
-               $('<em>').text('No pizzas so far. Why not add one?')
+               $('<em>').text('Soweit keine Bestellungen.')
               )
         li.slideDown();
         li.css('display', 'block');

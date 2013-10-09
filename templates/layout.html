@@ -31,9 +31,10 @@
           E5 Pizzaboy v2.0
         </h1>
         <p class=lead>
-          A whole new way to order pizza
+            Heutige Pizzeria: <a href=https://pizza.de/casa-del-gusto-dortmund-auf-der-linnert-8#>Casa del Gusto</a>
         </p>
         {% block body %}{% endblock %}
+        <a href="/order.pdf" class="btn btn-primary">Bestellung herunterladen</a>
       </div>
     </div>
     <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
