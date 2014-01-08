@@ -143,9 +143,11 @@ def handle_websocket(ws):
         type, data = q.get()
         ws.send(json.dumps({'type': type, 'data': data}))
 
-@werkzeug.serving.run_with_reloader
+#@werkzeug.serving.run_with_reloader
 def runServer():
     http_server = WSGIServer((host, port), wsgi_app, handler_class=WebSocketHandler)
     print('Server started at %s:%s'%(host,port))
     http_server.serve_forever()
 
+if __name__ == '__main__':
+    runServer()
