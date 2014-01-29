@@ -1,9 +1,9 @@
 
-display_nopizzas = function() {
-    if($.trim($("#orders").html())=='') {
-        li = $('<li>', {id: 'noentry', class: 'list-group-item'}).append(
+var display_nopizzas = function() {
+    if($.trim($("#orders").html())==='') {
+        var li = $('<li>', {id: 'noentry', class: 'list-group-item'}).append(
                $('<em>').text('Soweit keine Bestellungen.')
-              )
+              );
         li.slideDown();
         li.css('display', 'block');
         $("#orders").append(li);
@@ -12,9 +12,9 @@ display_nopizzas = function() {
             $('#noentry').remove();
         });
     }
-}
+};
 
-render_initial_entries = function() {
+var render_initial_entries = function() {
     $.getJSON('/get/entries', function(entries) {
         pizza_entries = entries
         orders = $("#orders")
@@ -23,12 +23,11 @@ render_initial_entries = function() {
         }
         display_nopizzas();
     });
-}
+};
 
-create_entry = function(entry, doSlide) {
+var create_entry = function(entry, doSlide) {
     description = entry['description'];
     pid = entry['pid'];
-    console.log(pid);
     price = entry['price'];
     author = entry['author'];
     paid = entry['paid'];
@@ -60,18 +59,18 @@ create_entry = function(entry, doSlide) {
     li.append(btngrp);
     $('#orders').append(li);
     display_nopizzas();
-}
+};
 
 
-delete_entry = function(pid) {
+var delete_entry = function(pid) {
     entry = $('#entry' + pid);
     entry.slideUp(400, function() {
         entry.remove();
         display_nopizzas();
     });
-}
+};
 
-toggle_paid = function(pid) {
+var toggle_paid = function(pid) {
     btn = $('#paid' + pid);
     if (btn.hasClass('active')) {
         btn.removeClass('active');
@@ -80,7 +79,7 @@ toggle_paid = function(pid) {
         btn.addClass('active');
         btn.addClass('btn-success');
     }
-}
+};
 
 render_initial_entries();
 
