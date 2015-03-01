@@ -190,3 +190,27 @@ React.render(
   document.getElementById('orders-panel')
 );
 
+var AdminPanel = React.createClass({
+    render: function() {
+        return (
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">
+                  Admin
+                </h3>
+              </div>
+              <ul className="list-group">
+                <li className="list-group-item">
+                  <a href="/order.pdf" className="btn btn-primary">Bestellung herunterladen</a>
+                </li>
+              </ul>
+            </div>
+        );
+    }
+});
+
+React.render(
+  <AdminPanel />,
+  document.getElementById('admin-panel')
+);
+
