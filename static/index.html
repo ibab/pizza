@@ -29,24 +29,7 @@
           </div>
           <ul id="orders" class="list-group">
           </ul>
-          <div class="panel-footer">
-            <form id="addpizza" class="form-inline" role="form" action="{{ url_for('add_entry') }}" method=post>
-              <div class="form-group col-sm-4">
-                <input type=text class="form-control" name=description placeholder=Bestellung>
-              </div>
-              <div class="form-group col-sm-3">
-                <input type=text class="form-control" name=author placeholder=Name>
-              </div>
-              <div class="form-group col-sm-3">
-                <div class="input-group">
-                  <input type=text class="form-control" name=price placeholder=Preis>
-                  <span class="input-group-addon">€</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <button type=submit class="btn btn-primary">Bestellen</button>
-              </div>
-            </form>
+          <div id="order-form" class="panel-footer">
           </div>
         </div>
         <a href="/order.pdf" class="btn btn-primary">Bestellung herunterladen</a>

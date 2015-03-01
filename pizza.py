@@ -79,9 +79,10 @@ def edit_entry(pid, action):
 
 @app.route('/add', methods=['POST'])
 def add_entry():
-    description = request.form['description']
-    author = request.form['author']
-    price = re.findall('(\d+)(?:[,.](\d))?\s*(?:€|E)?', request.form['price'])
+    data = request.form.to_dict()
+    description = data['description']
+    author = data['author']
+    price = re.findall('(\d+)(?:[,.](\d))?\s*(?:€|E)?', data['price'])
 
     if not description:
         return jsonify(msg='Please provide a description', type='error')
@@ -98,14 +99,9 @@ def add_entry():
             else:
                 price += int(value[1])
         csr = g.db.execute('insert into entries (description, author, price, paid) values (?, ?, ?, ?)',
-                [request.form['description'], request.form['author'], price, False])
+                [description, author, price, False])
         pid = csr.lastrowid
         g.db.commit()
-        data = {'description': description,
-                'author': author,
-                'price': cents_to_euros(price),
-                'paid': 0,
-                'pid': pid} 
                 
         update_clients()
     return jsonify(msg='New entry added', type='success')
