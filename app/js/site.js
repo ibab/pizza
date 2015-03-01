@@ -1,5 +1,6 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-var update = React.addons.update
+var update = React.addons.update;
+var events = new Events();
 
 /*
  * The Orders component is responsible for
@@ -25,6 +26,13 @@ var Orders = React.createClass({
                 this.setState({orders: orders});
             }
         }.bind(this));
+
+        // Listen to delete-all event
+        events.on("delete-all", function() {
+            this.state.orders.map(function(order) {
+                $.post('/edit/' + order.pid + '/delete');
+            }.bind(this));
+        }.bind(this));
     },
     togglePaid: function(i) {
         id = this.state.orders[i].pid
@@ -45,8 +53,8 @@ var Orders = React.createClass({
     },
     render: function() {
         if (this.state.orders.length == 0) {
-            return (
-                <li id="noentry" className="list-group-item">
+            var orderList = (
+                <li key={1} id="noentry" className="list-group-item">
                     <em>Soweit keine Bestellungen.</em>
                 </li>
             );
@@ -63,15 +71,16 @@ var Orders = React.createClass({
                     </Order>
                 );
             }.bind(this));
-
-            return (
-              <ul id="orders-list" className="list-group">
-                <ReactCSSTransitionGroup transitionName="example">
-                {orderList}
-                </ReactCSSTransitionGroup>
-              </ul>
-            );
         }
+
+        return (
+        <ReactCSSTransitionGroup transitionName="orders"
+                                 component="ul"
+                                 id="orders-list"
+                                 className="list-group">
+            {orderList}
+        </ReactCSSTransitionGroup>
+        );
     }
 });
 
@@ -125,7 +134,6 @@ var OrderForm = React.createClass({
             price: price
         },
         function(data) {
-            console.log(data);
             if (data.type == "error") {
                 div = $('<div>', {class: 'alert alert-danger alert-dismissable'});
                 div.html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>')
@@ -191,19 +199,27 @@ React.render(
 );
 
 var AdminPanel = React.createClass({
+    deleteAll: function() {
+        events.emit("delete-all");
+    },
     render: function() {
         return (
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <h3 className="panel-title">
-                  Admin
-                </h3>
+            <div className="col-sm-5">
+              <div className="panel panel-default">
+                <div className="panel-heading">
+                  <h3 className="panel-title">
+                    Admin
+                  </h3>
+                </div>
+                <ul className="list-group">
+                  <li className="list-group-item">
+                    <a href="/order.pdf" className="btn btn-primary">Bestellung herunterladen</a>
+                  </li>
+                  <li className="list-group-item">
+                    <a onClick={this.deleteAll} className="btn btn-primary">Bestellungen löschen</a>
+                  </li>
+                </ul>
               </div>
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <a href="/order.pdf" className="btn btn-primary">Bestellung herunterladen</a>
-                </li>
-              </ul>
             </div>
         );
     }
