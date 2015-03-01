@@ -13,6 +13,9 @@ import gevent.monkey; gevent.monkey.patch_all()
 
 from genorder import print_order
 
+import logging
+logging.basicConfig()
+
 import re
 import time
 import json
@@ -23,8 +26,9 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='static')
 app.config.from_object(__name__)
+app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 
 app.config.from_envvar('PIZZA_SETTINGS', silent=True)
 
@@ -52,15 +56,6 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@app.route('/')
-def show_entries():
-    cur = g.db.execute('select id, description, author, price, paid from entries order by id desc')
-    entries = [dict(pid=row[0], description=row[1], author=row[2], price=row[3], paid=row[4]) for row in cur.fetchall()]
-    for e in entries:
-        amount = e['price']
-        e['price'] = cents_to_euros(amount)
-    return render_template('show_entries.html', entries=entries)
-
 @app.route('/get/entries')
 def get_entries():
     cur = g.db.execute('select id, description, author, price, paid from entries order by id asc')
@@ -76,14 +71,11 @@ def edit_entry(pid, action):
         cur = g.db.execute('SELECT paid from entries WHERE id=?', [pid])
         paid = cur.fetchone()[0]
         g.db.execute('UPDATE entries SET paid=? WHERE id=?', [not paid, pid])
-        for q in queues:
-            q.put(('toggle_paid', pid))
     if action == 'delete':
         g.db.execute('DELETE FROM entries WHERE id=?', [pid])
-        for q in queues:
-            q.put(('delete_entry', pid))
     g.db.commit()
-    return redirect(url_for('show_entries'))
+    update_clients()
+    return json.dumps({'status': 'success'})
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -109,16 +101,19 @@ def add_entry():
                 [request.form['description'], request.form['author'], price, False])
         pid = csr.lastrowid
         g.db.commit()
-        flash('A new entry has been posted', 'success')
         data = {'description': description,
                 'author': author,
                 'price': cents_to_euros(price),
                 'paid': 0,
                 'pid': pid} 
                 
-        for q in queues:
-            q.put(('create_entry', data))
+        update_clients()
     return jsonify(msg='New entry added', type='success')
+
+def update_clients():
+    entries = get_entries()
+    for q in queues:
+        q.put(('update', entries))
 
 @app.route('/order.pdf', methods=['GET'])
 def get_order():
