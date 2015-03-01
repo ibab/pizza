@@ -1,4 +1,5 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+var update = React.addons.update
 
 /*
  * The Orders component is responsible for
@@ -38,7 +39,7 @@ var Orders = React.createClass({
         id = this.state.orders[i].pid
         $.post('/edit/' + id + '/delete');
 
-        var neworders = React.addons.update(this.state.orders, {$splice: [[i, 1]]});
+        var neworders = update(this.state.orders, {$splice: [[i, 1]]});
         this.setState({orders: neworders});
 
     },
@@ -64,9 +65,11 @@ var Orders = React.createClass({
             }.bind(this));
 
             return (
+              <ul id="orders-list" className="list-group">
                 <ReactCSSTransitionGroup transitionName="example">
                 {orderList}
                 </ReactCSSTransitionGroup>
+              </ul>
             );
         }
     }
@@ -104,11 +107,6 @@ var Order = React.createClass({
     }
 });
 
-React.render(
-  <Orders />,
-  document.getElementById('orders')
-);
-
 /*
  * The OrderForm component allows the user to add a
  * new order to the list.
@@ -127,12 +125,13 @@ var OrderForm = React.createClass({
             price: price
         },
         function(data) {
+            console.log(data);
             if (data.type == "error") {
                 div = $('<div>', {class: 'alert alert-danger alert-dismissable'});
                 div.html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>')
                 div.append($('<strong>').text('Failure! '));
                 div.append(data.msg);
-                $('#main-panel').before(div);
+                $('#orders-panel').before(div);
             }
         });
 
@@ -142,29 +141,52 @@ var OrderForm = React.createClass({
     },
     render: function() {
         return (
-            <form id="addpizza" className="form-inline" role="form" onSubmit={this.onSubmit}>
-              <div className="form-group col-sm-4">
-                <input type="text" className="form-control" ref="description" placeholder="Bestellung"></input>
-              </div>
-              <div className="form-group col-sm-3">
-                <input type="text" className="form-control" ref="author" placeholder="Name"></input>
-              </div>
-              <div className="form-group col-sm-3">
-                <div className="input-group">
-                  <input type="text" className="form-control" ref="price" placeholder="Preis"></input>
-                  <span className="input-group-addon">€</span>
+            <div id="order-form" className="panel-footer">
+              <form id="addpizza" className="form-inline" role="form" onSubmit={this.onSubmit}>
+                <div className="form-group col-sm-4">
+                  <input type="text" className="form-control" ref="description" placeholder="Bestellung"></input>
                 </div>
+                <div className="form-group col-sm-3">
+                  <input type="text" className="form-control" ref="author" placeholder="Name"></input>
+                </div>
+                <div className="form-group col-sm-3">
+                  <div className="input-group">
+                    <input type="text" className="form-control" ref="price" placeholder="Preis"></input>
+                    <span className="input-group-addon">€</span>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-primary">Bestellen</button>
+                </div>
+              </form>
+            </div>
+        );
+    }
+});
+
+/*
+ * The OrdersPanel component represents the entire
+ * orders UI.
+ *
+ */
+var OrdersPanel = React.createClass({
+    render: function() {
+        return (
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">
+                  Bestellungen
+                </h3>
               </div>
-              <div className="form-group">
-                <button type="submit" className="btn btn-primary">Bestellen</button>
-              </div>
-            </form>
+                <Orders />
+                <OrderForm />
+            </div>
         );
     }
 });
 
 React.render(
-  <OrderForm />,
-  document.getElementById('order-form')
+  <OrdersPanel />,
+  document.getElementById('orders-panel')
 );
 

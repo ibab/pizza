@@ -21,18 +21,19 @@
         Source-Code: <a href=https://github.com/ibab/python-pizza>https://github.com/ibab/python-pizza</a><br>
         <em>Hinweis: Doktoranden werden gebeten,<br>einen Euro mehr für Getränke und Snacks zu bezahlen.</em>
         </p>
-        <div id="main-panel" class="panel panel-default">
+        <div id="orders-panel"></div>
+        <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-              Bestellungen
+              Admin
             </h3>
           </div>
-          <ul id="orders" class="list-group">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <a href="/order.pdf" class="btn btn-primary">Bestellung herunterladen</a>
+            </li>
           </ul>
-          <div id="order-form" class="panel-footer">
-          </div>
         </div>
-        <a href="/order.pdf" class="btn btn-primary">Bestellung herunterladen</a>
       </div>
     </div>
     <script type="text/jsx" src="/site.js"></script>
