@@ -26,7 +26,7 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-app = Flask(__name__, static_url_path='', static_folder='../app')
+app = Flask(__name__, static_url_path='', static_folder='../client')
 app.config.from_object(__name__)
 app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 
