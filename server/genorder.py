@@ -22,6 +22,9 @@ def cents_to_euros(cents):
 def escape_latex(pizzas):
     return pizzas #pizzas.replace("\\", "\\\\").replace("%", "\\%").replace("&", "\\&")
 
+def sanitize_tex(text):
+    return text.replace('\\', '').replace('{','\\{').replace('}', '\\}')
+
 def print_order(pizzas, prices):
 
     coststring = u"Preis (mit Rabatt): {} ({})".format(
@@ -29,6 +32,7 @@ def print_order(pizzas, prices):
         cents_to_euros(int(round(0.9 * sum(prices))))
     )
 
+    pizzas = map(sanitize_tex, pizzas)
     pizzas = '\\item ' + escape_latex(' \\ \n \\item '.join(pizzas))
     identifier = "pizza-{}".format(datetime.now().strftime("%Y-%m-%d"))
     filename = "/tmp/{}.tex".format(identifier)
