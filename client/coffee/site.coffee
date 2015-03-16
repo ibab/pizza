@@ -11,7 +11,7 @@ Orders = React.createClass
   componentDidMount: ->
     $.getJSON '/get/entries', (orders) => @setState(orders: orders)
 
-    ws = new WebSocket 'ws://localhost:5000/websocket'
+    ws = new WebSocket 'ws://babushk.in:5000/websocket'
     ws.addEventListener 'message', (e) =>
       evt = JSON.parse(e.data)
       if evt.type == 'update'

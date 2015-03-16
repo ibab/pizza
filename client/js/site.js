@@ -23,7 +23,7 @@
           });
         };
       })(this));
-      ws = new WebSocket('ws://localhost:5000/websocket');
+      ws = new WebSocket('ws://babushk.in:5000/websocket');
       ws.addEventListener('message', (function(_this) {
         return function(e) {
           var evt, orders;
