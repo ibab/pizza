@@ -84,6 +84,7 @@ Hallo, \\
 
 hier kommt unsere heutige Bestellung. \\
 Unsere Kundennummer ist 138. \\
+Lieferung bitte erst ab 18:00 Uhr.\\
 
 \begin{itemize}
 \itemsep-0.3em
@@ -100,6 +101,7 @@ Otto-Hahn-Str. 4 \\
 
 Einfahrt 29, Raum: P2-01-513 (1 Stockwerk nach oben, durch das Foyer ins Gebäude P2, 1 Stockwerk nach oben. Oder einfach anrufen) \\
 Bei Fragen bitte unter 02317553665 anrufen! Schöne Grüße und bis gleich!
+
 
 \newpage
 
